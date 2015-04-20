@@ -26,6 +26,7 @@ namespace Accounts_IOU.Controllers
         [ResponseType(typeof(User))]
         public IHttpActionResult GetUser(int id)
         {
+            //TEST BY TORBEN
             User user = db.Users.Find(id);
 
             if (user == null)
