@@ -70,11 +70,11 @@ namespace Accounts_IOU.Controllers
         {
             double difference = 0;
 
-            db.Transactions.Where(x => x.UserID == u.UserID).ToList().ForEach(x => 
+            db.Transactions.Where(x => x.UserID == u.UserID && x.RelationUserID == relationUserID).ToList().ForEach(x => 
                 difference += (double)x.Amount
             );
 
-            db.Transactions.Where(x => x.UserID == relationUserID).ToList().ForEach(x => 
+            db.Transactions.Where(x => x.UserID == relationUserID && x.RelationUserID == u.UserID).ToList().ForEach(x => 
                 difference -= (double)x.Amount
             );
 
