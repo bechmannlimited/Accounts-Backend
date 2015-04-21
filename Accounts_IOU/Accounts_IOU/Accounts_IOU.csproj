@@ -184,7 +184,9 @@
     <Compile Include="Classes\Extensions\User_Extension.cs" />
     <Compile Include="Classes\Response.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
@@ -294,6 +296,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Base\" />
+    <Folder Include="Views\Payment\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
