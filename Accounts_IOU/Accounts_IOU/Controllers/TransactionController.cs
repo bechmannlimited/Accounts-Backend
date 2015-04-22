@@ -84,5 +84,14 @@ namespace Accounts_IOU.Controllers
 
             return Json(response, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult TransactionsForUser(User u)
+        {
+            var user = db.Users.Find(u.UserID);
+
+            var transactions = jsonDB.Transactions.Where(x => x.UserID == u.UserID || x.RelationUserID == x.UserID).ToList();
+            return Json(transactions, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
