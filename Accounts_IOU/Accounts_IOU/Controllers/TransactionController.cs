@@ -43,6 +43,7 @@ namespace Accounts_IOU.Controllers
 			        Transaction transaction = new Transaction();
                     transaction.UserID = (int)purchase.UserID;
                     transaction.RelationUserID = relationUserID;
+                    transaction.PurchaseID = purchase.PurchaseID;
                     transaction.Amount = amount;
                     db.Transactions.Add(transaction);
 			    }
