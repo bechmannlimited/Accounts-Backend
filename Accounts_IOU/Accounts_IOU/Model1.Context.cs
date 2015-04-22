@@ -25,10 +25,9 @@ namespace Accounts_IOU
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Purchase> Purchases { get; set; }
         public virtual DbSet<Relation> Relations { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Purchase> Purchases { get; set; }
     }
 }
