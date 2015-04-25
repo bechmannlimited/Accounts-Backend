@@ -85,11 +85,21 @@ namespace Accounts_IOU.Controllers
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult TransactionsForUser(User u)
+        public JsonResult TransactionsForUser(User u, int? from)
         {
             var user = db.Users.Find(u.UserID);
 
-            var transactions = jsonDB.Transactions.Where(x => x.UserID == u.UserID || x.RelationUserID == x.UserID).ToList();
+            var transactions = jsonDB.Transactions.Where(x => x.UserID == u.UserID || x.RelationUserID == x.UserID);
+            
+            if (from != null)
+	        {
+		        transactions = transactions.OrderBy(x => x.TransactionDate).Skip((int)from);
+	        }
+
+            transactions = transactions.Take(100);
+
+            transactions.ToList().ForEach(x => x.User1 = jsonDB.Users.Find(x.RelationUserID));
+
             return Json(transactions, JsonRequestBehavior.AllowGet);
         }
 
