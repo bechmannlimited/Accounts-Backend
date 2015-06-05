@@ -57,8 +57,6 @@ namespace Accounts_IOU.Controllers
                 response["User"] = user;
 	        }
 
-           
-
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 

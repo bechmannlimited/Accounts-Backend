@@ -17,8 +17,26 @@ namespace Accounts_IOU.Controllers
         private Accounts_IOUEntities db = Accounts_IOUEntities.jsonDB();
 
         // GET: api/Transactions
-        public IQueryable<Transaction> GetTransactions()
+        [Queryable]
+        public IQueryable<Transaction> GetTransactions([FromBody]User u)
         {
+            if (u.UserID > 0)
+            {
+                var user = db.Users.Find(u.UserID);                
+
+                var transactions = Accounts_IOUEntities.jsonDB().Transactions.Where(x => x.UserID == u.UserID || x.RelationUserID == user.UserID);
+
+                transactions.ToList().ForEach(x => x.User1 = Accounts_IOUEntities.jsonDB().Users.Find(x.RelationUserID));
+                transactions.ToList().ForEach(x => x.User = Accounts_IOUEntities.jsonDB().Users.Find(x.UserID));
+                transactions.ToList().ForEach(
+                    x =>
+                    x.Purchase = db.Purchases.Find(x.Purchase.PurchaseID) != null ? Accounts_IOUEntities.jsonDB().Purchases.Find(x.Purchase.PurchaseID) : new Purchase()
+
+                    );
+
+                return db.Transactions;
+            }
+
             return db.Transactions;
         }
 
@@ -74,6 +92,11 @@ namespace Accounts_IOU.Controllers
         [ResponseType(typeof(Transaction))]
         public IHttpActionResult PostTransaction(Transaction transaction)
         {
+            transaction.TransactionDate = DateTime.Now; // TODO: get from instance
+            transaction.DateEntered = DateTime.Now;
+            transaction.PurchaseID = 0;
+            transaction.Description = "";
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

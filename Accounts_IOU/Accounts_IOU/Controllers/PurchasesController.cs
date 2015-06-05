@@ -72,15 +72,42 @@ namespace Accounts_IOU.Controllers
 
         // POST: api/Purchases
         [ResponseType(typeof(Purchase))]
-        public IHttpActionResult PostPurchase(Purchase purchase)
+        public IHttpActionResult PostPurchase(Purchase purchase, [FromBody]int[] relationUserIDs, [FromBody]double[] relationUserAmounts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Purchases.Add(purchase);
-            db.SaveChanges();
+            try
+            {
+                purchase.DatePurchased = DateTime.Now; // TODO: get from instance
+                purchase.DateEntered = DateTime.Now;
+
+                db.Purchases.Add(purchase);
+                db.SaveChanges();
+
+                for (int i = 0; i < relationUserIDs.Length; i++)
+                {
+                    int relationUserID = relationUserIDs[i];
+                    double amount = relationUserAmounts[i];
+
+                    Transaction transaction = new Transaction();
+                    transaction.UserID = (int)purchase.UserID;
+                    transaction.RelationUserID = relationUserID;
+                    transaction.PurchaseID = purchase.PurchaseID;
+                    transaction.Amount = amount;
+                    transaction.Description = purchase.Description;
+                    db.Transactions.Add(transaction);
+                }
+
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("Error", e);
+                return BadRequest(ModelState);
+            }
 
             return CreatedAtRoute("DefaultApi", new { id = purchase.PurchaseID }, purchase);
         }
