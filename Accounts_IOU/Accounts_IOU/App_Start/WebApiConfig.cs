@@ -15,6 +15,18 @@ namespace Accounts_IOU
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
+                name: "FriendsApi",
+                routeTemplate: "api/Users/{userID}/Friends/{id}",
+                defaults: new { controller = "Friends", id = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "UserTransactionsApi",
+                routeTemplate: "api/Users/{userID}/Transactions/{id}",
+                defaults: new { controller = "Transactions", id = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }

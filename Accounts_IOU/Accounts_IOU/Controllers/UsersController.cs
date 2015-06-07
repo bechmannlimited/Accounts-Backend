@@ -120,119 +120,74 @@ namespace Accounts_IOU.Controllers
             return db.Users.Count(e => e.UserID == id) > 0;
         }
 
-        [Route("api/Users/DifferenceBetweenUsers")]
-        public IHttpActionResult PostDifferenceBetweenUsers([FromBody]User u, [FromBody]long relationUserID)
+        [HttpPost]
+        [Route("api/Users/login")]
+        public IHttpActionResult PostLogin([FromUri]User u)
         {
-            double difference = 0;
-
-            db.Transactions.Where(x => x.UserID == u.UserID && x.RelationUserID == relationUserID).ToList().ForEach(x =>
-                difference += (double)x.Amount
-            );
-
-            db.Transactions.Where(x => x.UserID == relationUserID && x.RelationUserID == u.UserID).ToList().ForEach(x =>
-                difference -= (double)x.Amount
-            );
-
-            var response = new Dictionary<string, object>();
-            response["difference"] = difference;
-
-            return Ok(response);
-        }
-
-        [Route("api/Users/AddFriend")]
-        public IHttpActionResult PostAddFriend(User u, long relationUserID)
-        {
-            Relation relation = new Relation();
-            User user = db.Users.Find(u.UserID);
-            User relationUser = db.Users.Find(relationUserID);
-
-            if (user != null && relationUser != null)
+            if (u != null)
             {
-                if (!(db.Relations.Any(x => x.UserID == user.UserID && x.RelationUserID == relationUser.UserID)))
-                {
-                    relation.RelationUserID = relationUser.UserID;
-                    relation.DateEntered = DateTime.Now;
+                var matches = db.Users.Where(x => x.Username == u.Username && x.Password == u.Password).ToList();
 
-                    user.Relations.Add(relation);
-
-                    db.SaveChanges();
-                }
-                else
+                if (matches.Count() > 0)
                 {
-                    relation = db.Relations.Where(x => x.UserID == user.UserID && x.RelationUserID == relationUser.UserID).FirstOrDefault();
+                    var match = matches.FirstOrDefault();
+                    var user = Accounts_IOUEntities.jsonDB().Users.Where(x => x.UserID == match.UserID).ToList().FirstOrDefault();
+                    user.Password = "";
+                    return Ok(user);
                 }
             }
 
-            Relation rc = Accounts_IOUEntities.jsonDB().Relations.Find(relation.RelationID);
-            return Json(rc, JsonRequestBehavior.AllowGet);
+            ModelState.AddModelError("Error", new Exception("Login failed"));
+            return BadRequest(ModelState);
         }
 
-        public JsonResult Login(string username, string password)
-        {
-            var matches = db.Users.Where(x => x.Username == username && x.Password == password).ToList();
+        //public JsonResult FriendInvitations(User u)
+        //{
+        //    User user = db.Users.Find(u.UserID);
 
-            var success = matches.Count() > 0 ? ResponseStatus.Success : ResponseStatus.Failed;
-            var response = new ResponseDictionary(success);
+        //    List<Relation> unconfirmedInvitations = new List<Relation>();
 
-            if (matches.Count() > 0)
-            {
-                var match = matches.FirstOrDefault();
-                var user = Accounts_IOUEntities.jsonDB().Users.Where(x => x.UserID == match.UserID).ToList().FirstOrDefault();
+        //    List<Relation> invites = db.Relations.Where(r => r.RelationUserID == user.UserID).ToList();
 
-                //var friendRelations = new Accounts_IOUEntities().Relations.Where(x => x.UserID == user.UserID).ToList();
-                //user.Friends = Accounts_IOUEntities.jsonDB().Users.ToList().Where(x => friendRelations.Any(r => r.RelationUserID == x.UserID)).ToList();
+        //    foreach (var item in invites)
+        //    {
+        //        var matches = db.Relations.Where(r => r.UserID == u.UserID && r.RelationUserID == item.UserID);
 
-                response["User"] = user;
-            }
+        //        if (matches.Count() == 0)
+        //        {
+        //            unconfirmedInvitations.Add(item);
+        //        }
+        //    }
 
-            return Json(response, JsonRequestBehavior.AllowGet);
-        }
+        //    List<Relation> rc = Accounts_IOUEntities.jsonDB().Relations.ToList().Where(x => unconfirmedInvitations.Any(i => i.RelationID == x.RelationID)).ToList();
+        //    rc.ForEach(x => x.User = Accounts_IOUEntities.jsonDB().Users.Find(x.UserID));
 
-        public JsonResult FriendInvitations(User u)
-        {
-            User user = db.Users.Find(u.UserID);
+        //    return Json(rc);
+        //}
 
-            List<Relation> unconfirmedInvitations = new List<Relation>();
+        //public JsonResult ActiveUsersMatching(User u, string searchText)
+        //{
+        //    var user = db.Users.Find(u.UserID);
 
-            List<Relation> invites = db.Relations.Where(r => r.RelationUserID == user.UserID).ToList();
+        //    searchText = searchText.ToLower();
+        //    var matches = Accounts_IOUEntities.jsonDB().Users.Where(x => x.Username.ToLower() == searchText || x.Email.ToLower() == searchText).ToList();
 
-            foreach (var item in invites)
-            {
-                var matches = db.Relations.Where(r => r.UserID == u.UserID && r.RelationUserID == item.UserID);
+        //    matches = matches.Where(x => x.UserID != user.UserID).ToList();
+        //    matches = matches.Where(x => !user.GetJSONFriendlyListOfFriendsWithStatus().Any(f => f.UserID == x.UserID)).ToList();
 
-                if (matches.Count() == 0)
-                {
-                    unconfirmedInvitations.Add(item);
-                }
-            }
+        //    return Json(matches, JsonRequestBehavior.AllowGet);
+        //}
 
-            List<Relation> rc = Accounts_IOUEntities.jsonDB().Relations.ToList().Where(x => unconfirmedInvitations.Any(i => i.RelationID == x.RelationID)).ToList();
-            rc.ForEach(x => x.User = Accounts_IOUEntities.jsonDB().Users.Find(x.UserID));
+        //public JsonResult GetFriends(User u)
+        //{
+        //    var user = db.Users.Find(u.UserID);
 
-            return Json(rc);
-        }
+        //    //var friendRelations = new Accounts_IOUEntities().Relations.Where(x => x.UserID == user.UserID).ToList();
+        //    //user.Friends = Accounts_IOUEntities.jsonDB().Users.ToList().Where(x => friendRelations.Any(r => r.RelationUserID == x.UserID)).ToList();
 
-        public JsonResult ActiveUsersMatching(User u, string searchText)
-        {
-            var user = db.Users.Find(u.UserID);
-
-            searchText = searchText.ToLower();
-            var matches = Accounts_IOUEntities.jsonDB().Users.Where(x => x.Username.ToLower() == searchText || x.Email.ToLower() == searchText).ToList();
-
-            matches = matches.Where(x => x.UserID != user.UserID).ToList();
-            matches = matches.Where(x => !user.GetJSONFriendlyListOfFriendsWithStatus().Any(f => f.UserID == x.UserID)).ToList();
-
-            return Json(matches, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetFriends(User u)
-        {
-            var user = db.Users.Find(u.UserID);
-
-            //var friendRelations = new Accounts_IOUEntities().Relations.Where(x => x.UserID == user.UserID).ToList();
-            //user.Friends = Accounts_IOUEntities.jsonDB().Users.ToList().Where(x => friendRelations.Any(r => r.RelationUserID == x.UserID)).ToList();
-
-            return Json(user.GetJSONFriendlyListOfFriendsWithStatus(), JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(user.GetJSONFriendlyListOfFriendsWithStatus(), JsonRequestBehavior.AllowGet);
+        //}
     }
+
 }
+

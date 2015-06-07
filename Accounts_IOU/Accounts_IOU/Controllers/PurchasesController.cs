@@ -72,7 +72,7 @@ namespace Accounts_IOU.Controllers
 
         // POST: api/Purchases
         [ResponseType(typeof(Purchase))]
-        public IHttpActionResult PostPurchase(Purchase purchase, [FromBody]int[] relationUserIDs, [FromBody]double[] relationUserAmounts)
+        public IHttpActionResult PostPurchase(Purchase purchase, [FromUri]int[] RelationUserIDs, [FromUri] double[] RelationUserAmounts)
         {
             if (!ModelState.IsValid)
             {
@@ -87,10 +87,10 @@ namespace Accounts_IOU.Controllers
                 db.Purchases.Add(purchase);
                 db.SaveChanges();
 
-                for (int i = 0; i < relationUserIDs.Length; i++)
+                for (int i = 0; i < RelationUserIDs.Length; i++)
                 {
-                    int relationUserID = relationUserIDs[i];
-                    double amount = relationUserAmounts[i];
+                    int relationUserID = RelationUserIDs[i];
+                    double amount = RelationUserAmounts[i];
 
                     Transaction transaction = new Transaction();
                     transaction.UserID = (int)purchase.UserID;
@@ -125,7 +125,14 @@ namespace Accounts_IOU.Controllers
             db.Purchases.Remove(purchase);
             db.SaveChanges();
 
-            return Ok(purchase);
+            foreach (var transaction in db.Transactions.Where(x => x.PurchaseID == id).ToList())
+            {
+                db.Transactions.Remove(transaction); // IS THIS NECCESSARY? CASCADE?
+            }
+
+            db.SaveChanges();
+
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

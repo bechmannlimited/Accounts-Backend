@@ -7,8 +7,9 @@ namespace Accounts_IOU
 {
     public partial class User
     {
-        public RelationStatus relationStatus = RelationStatus.Undefined;
+        public RelationStatus RelationStatus = RelationStatus.Undefined;
         public List<User> Friends = new List<User>();
+        public double Difference { get; set; } // FOR AS FRIEND
 
         public List<User> GetJSONFriendlyListOfConfirmedFriends() 
         {
@@ -42,12 +43,13 @@ namespace Accounts_IOU
 
                 if (db.Relations.Where(x => x.UserID == relation.RelationUserID && x.RelationUserID == this.UserID).Count() > 0)
                 {
-                    friend.relationStatus = RelationStatus.Confirmed;
+                    friend.RelationStatus = RelationStatus.Confirmed;
                 }
                 else{
-                    friend.relationStatus = RelationStatus.Pending;
+                    friend.RelationStatus = RelationStatus.Pending;
                 }
 
+                friend.Difference = new DifferenceBetweenUsers(this.UserID, friend.UserID).Difference;
                 friends.Add(friend);
             }
 

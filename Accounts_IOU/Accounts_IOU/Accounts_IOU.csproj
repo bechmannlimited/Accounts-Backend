@@ -196,13 +196,16 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Classes\DifferenceBetweenUsers.cs" />
     <Compile Include="Classes\Enums\Enums.cs" />
     <Compile Include="Classes\Extensions\Accounts_IOUEntities_Extension.cs" />
+    <Compile Include="Classes\Extensions\Purchase_Extension.cs" />
     <Compile Include="Classes\Extensions\TransactionExtension.cs" />
     <Compile Include="Classes\Extensions\User_Extension.cs" />
     <Compile Include="Classes\Response.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\FriendsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PurchasesController.cs" />
     <Compile Include="Controllers\TransactionController.cs" />
