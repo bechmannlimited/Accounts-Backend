@@ -26,6 +26,7 @@ namespace Accounts_IOU.Controllers
 
         // POST api/friends
         [ResponseType(typeof(User))]
+        [Route("api/Friends/{userID}/AddFriend/{relationUserID}")]
         public IHttpActionResult Post(int userID, [FromUri]long relationUserID)
         {
             Relation relation = new Relation();

@@ -31,6 +31,9 @@ namespace Accounts_IOU.Controllers
                 transactions.ToList().ForEach(x =>
                     x.Purchase = db.Purchases.Find(x.PurchaseID) != null ? Accounts_IOUEntities.jsonDB().Purchases.Find(x.PurchaseID) : new Purchase()
                 );
+                transactions.ToList().ForEach(x => 
+                    x.Purchase.LoadTransactionData() 
+                );
 
                 return transactions;
             }
@@ -52,6 +55,11 @@ namespace Accounts_IOU.Controllers
             transactions.ToList().ForEach(x =>
                 x.Purchase = db.Purchases.Find(x.PurchaseID) != null ? Accounts_IOUEntities.jsonDB().Purchases.Find(x.PurchaseID) : new Purchase()
             );
+
+             transactions.ToList().ForEach(x =>
+                 x.Purchase.LoadTransactionData()
+             );
+
 
             return transactions;
         }
@@ -129,10 +137,10 @@ namespace Accounts_IOU.Controllers
         [ResponseType(typeof(Transaction))]
         public IHttpActionResult PostTransaction(Transaction transaction)
         {
-            transaction.TransactionDate = DateTime.Now; // TODO: get from instance
+            //transaction.TransactionDate = DateTime.Now; // TODO: get from instance
             transaction.DateEntered = DateTime.Now;
             transaction.PurchaseID = 0;
-            transaction.Description = "";
+            //transaction.Description = "";
 
             if (!ModelState.IsValid)
             {

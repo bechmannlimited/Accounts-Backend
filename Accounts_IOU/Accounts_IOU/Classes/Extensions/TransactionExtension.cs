@@ -9,6 +9,13 @@ namespace Accounts_IOU
     {
 
         public Purchase Purchase = new Purchase();
-
+        //public List<Transaction> Transactions;
+        //{
+        //    get
+        //    {
+        //        return Accounts_IOUEntities.jsonDB().Transactions.Where(x => x.PurchaseID == this.PurchaseID).ToList();
+        //    }
+            
+        //}
     }
 }

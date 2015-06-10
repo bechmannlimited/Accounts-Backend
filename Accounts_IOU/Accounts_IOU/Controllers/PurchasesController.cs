@@ -32,12 +32,14 @@ namespace Accounts_IOU.Controllers
                 return NotFound();
             }
 
+            purchase.LoadTransactionData();
+
             return Ok(purchase);
         }
 
         // PUT: api/Purchases/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutPurchase(int id, Purchase purchase)
+        public IHttpActionResult PutPurchase(int id, Purchase purchase, [FromUri]int[] RelationUserIDs, [FromUri] double[] RelationUserAmounts)
         {
             if (!ModelState.IsValid)
             {
@@ -51,6 +53,7 @@ namespace Accounts_IOU.Controllers
 
             db.Entry(purchase).State = EntityState.Modified;
 
+            //UPDATE PURCHASE DETAILS 
             try
             {
                 db.SaveChanges();
@@ -67,6 +70,50 @@ namespace Accounts_IOU.Controllers
                 }
             }
 
+            //REMOVE OLD TRANSACTIONS
+            foreach (var transaction in db.Transactions.Where(x => x.PurchaseID == id).ToList())
+            {
+                db.Transactions.Remove(transaction); // IS THIS NECCESSARY? CASCADE?
+            }
+
+            db.SaveChanges();
+
+            //ADD TRANSACTIONS AGAIN
+            try
+            {
+                //purchase.DatePurchased = DateTime.Now; // TODO: get from instance
+                //purchase.DateEntered = DateTime.Now;
+
+                //db.Purchases.Add(purchase);
+                //db.SaveChanges();
+
+                for (int i = 0; i < RelationUserIDs.Length; i++)
+                {
+                    int relationUserID = RelationUserIDs[i];
+                    double amount = RelationUserAmounts[i];
+
+                    if (relationUserID != purchase.UserID) {
+
+                        Transaction transaction = new Transaction();
+                        transaction.UserID = (int)purchase.UserID;
+                        transaction.RelationUserID = relationUserID;
+                        transaction.PurchaseID = purchase.PurchaseID;
+                        transaction.Amount = amount;
+                        transaction.Description = purchase.Description;
+                        transaction.TransactionDate = purchase.DatePurchased;
+                        transaction.DateEntered = purchase.DateEntered;
+                        db.Transactions.Add(transaction);
+                    }
+                }
+
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("Error", e);
+                return BadRequest(ModelState);
+            }
+
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -81,7 +128,7 @@ namespace Accounts_IOU.Controllers
 
             try
             {
-                purchase.DatePurchased = DateTime.Now; // TODO: get from instance
+                //purchase.DatePurchased = DateTime.Now; // TODO: get from instance
                 purchase.DateEntered = DateTime.Now;
 
                 db.Purchases.Add(purchase);
@@ -92,13 +139,18 @@ namespace Accounts_IOU.Controllers
                     int relationUserID = RelationUserIDs[i];
                     double amount = RelationUserAmounts[i];
 
-                    Transaction transaction = new Transaction();
-                    transaction.UserID = (int)purchase.UserID;
-                    transaction.RelationUserID = relationUserID;
-                    transaction.PurchaseID = purchase.PurchaseID;
-                    transaction.Amount = amount;
-                    transaction.Description = purchase.Description;
-                    db.Transactions.Add(transaction);
+                    if (relationUserID != purchase.UserID)
+                    {
+                        Transaction transaction = new Transaction();
+                        transaction.UserID = (int)purchase.UserID;
+                        transaction.RelationUserID = relationUserID;
+                        transaction.PurchaseID = purchase.PurchaseID;
+                        transaction.Amount = amount;
+                        transaction.Description = purchase.Description;
+                        transaction.TransactionDate = purchase.DatePurchased;
+                        transaction.DateEntered = purchase.DateEntered;
+                        db.Transactions.Add(transaction);
+                    }
                 }
 
                 db.SaveChanges();
