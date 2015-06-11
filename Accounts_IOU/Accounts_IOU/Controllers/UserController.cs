@@ -8,10 +8,8 @@ using System.Web.Mvc;
 namespace Accounts_IOU.Controllers
 {
 
-    public class UserController : Controller
+    public class UserController : BaseController
     {
-        Accounts_IOUEntities db = new Accounts_IOUEntities();
-
         //
         // GET: /User/
         public JsonResult AddFriend(User u, long relationUserID)
@@ -58,8 +56,6 @@ namespace Accounts_IOU.Controllers
 
                 response["User"] = user;
 	        }
-
-           
 
             return Json(response, JsonRequestBehavior.AllowGet);
         }

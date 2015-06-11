@@ -16,11 +16,11 @@ namespace Accounts_IOU
     {
         public User()
         {
+            this.Purchases = new HashSet<Purchase>();
             this.Relations = new HashSet<Relation>();
             this.Relations1 = new HashSet<Relation>();
             this.Transactions = new HashSet<Transaction>();
             this.Transactions1 = new HashSet<Transaction>();
-            this.Purchases = new HashSet<Purchase>();
         }
     
         public int UserID { get; set; }
@@ -30,10 +30,10 @@ namespace Accounts_IOU
         public Nullable<System.DateTime> DateEntered { get; set; }
         public string Active { get; set; }
     
+        public virtual ICollection<Purchase> Purchases { get; set; }
         public virtual ICollection<Relation> Relations { get; set; }
         public virtual ICollection<Relation> Relations1 { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<Transaction> Transactions1 { get; set; }
-        public virtual ICollection<Purchase> Purchases { get; set; }
     }
 }

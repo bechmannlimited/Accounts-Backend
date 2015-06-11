@@ -16,5 +16,18 @@ namespace Accounts_IOU
             dbLite.Configuration.ProxyCreationEnabled = false;
             return dbLite;
         }
+
+        //public Accounts_IOUEntities()
+        //{
+        //    Configuration.LazyLoadingEnabled = false;
+        //    Configuration.ProxyCreationEnabled = false;
+        //}
+
+        //public override Accounts_IOUEntities()
+        //    : base("name=Accounts_IOUEntities")
+        //{
+        //    Configuration.LazyLoadingEnabled = false;
+        //    Configuration.ProxyCreationEnabled = false;
+        //}
     }
 }
