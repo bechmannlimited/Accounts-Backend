@@ -9,9 +9,12 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Accounts_IOU;
+using CompresJSON;
 
 namespace Accounts_IOU.Controllers
 {
+    [DecryptAndDecompressAsNecessaryWebApi]
+    [EncryptAndCompressAsNecessaryWebApi]
     public class FriendsController : ApiController
     {
         private Accounts_IOUEntities db = Accounts_IOUEntities.jsonDB();

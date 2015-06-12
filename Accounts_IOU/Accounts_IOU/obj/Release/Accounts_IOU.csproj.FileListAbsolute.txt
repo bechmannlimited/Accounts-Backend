@@ -217,3 +217,4 @@ C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\b
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\obj\Release\Accounts_IOU.dll
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\obj\Release\Accounts_IOU.pdb
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\obj\Release\Accounts_IOU.csprojResolveAssemblyReference.cache
+C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\Jint.dll

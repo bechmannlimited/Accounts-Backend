@@ -225,6 +225,7 @@ C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\b
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\Antlr3.Runtime.dll
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\EntityFramework.dll
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\EntityFramework.SqlServer.dll
+C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\Jint.dll
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\Microsoft.AspNet.Identity.Core.dll
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\Microsoft.AspNet.Identity.EntityFramework.dll
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\Microsoft.AspNet.Identity.Owin.dll
@@ -259,7 +260,6 @@ C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\b
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\EntityFramework.SqlServer.xml
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\Microsoft.Data.Edm.xml
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\Microsoft.Data.OData.xml
-C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\Newtonsoft.Json.xml
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\System.Net.Http.Formatting.xml
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\System.Spatial.xml
 C:\Users\alex__000\Documents\GitHub\Accounts-Backend\Accounts_IOU\Accounts_IOU\bin\System.Web.Http.xml

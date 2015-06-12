@@ -16,10 +16,10 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressSSLPort>44301</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -48,6 +48,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Jint">
+      <HintPath>..\packages\Jint.2.5.0\lib\portable-net40+sl50+win+wpa81+wp80\Jint.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Data.Edm, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -203,8 +206,28 @@
     <Compile Include="Classes\Extensions\TransactionExtension.cs" />
     <Compile Include="Classes\Extensions\User_Extension.cs" />
     <Compile Include="Classes\Response.cs" />
+    <Compile Include="CompresJSONLibrary\Action filters\ApplyEncryptionAndCompression.cs" />
+    <Compile Include="CompresJSONLibrary\Action filters\WebApiApplyEncryptionAndCompression.cs" />
+    <Compile Include="CompresJSONLibrary\CompresJSON.cs" />
+    <Compile Include="CompresJSONLibrary\CompresJSONSettings.cs" />
+    <Compile Include="CompresJSONLibrary\Compressor\CompressionMethod.cs" />
+    <Compile Include="CompresJSONLibrary\Compressor\Compressor.cs" />
+    <Compile Include="CompresJSONLibrary\Compressor\Dependencies\GZip.cs" />
+    <Compile Include="CompresJSONLibrary\Compressor\Dependencies\LZ77.cs" />
+    <Compile Include="CompresJSONLibrary\Encryptor\Dependencies\CryptoJS.cs" />
+    <Compile Include="CompresJSONLibrary\Encryptor\Encryptor.cs" />
+    <Compile Include="CompresJSONLibrary\Router\CompresJSONRouteManager.cs" />
+    <Compile Include="CompresJSONLibrary\Router\RouteHandlers\DecryptMVCRouteHandler.cs" />
+    <Compile Include="CompresJSONLibrary\Router\RouteHandlers\DecryptWebApiRouteHandler.cs" />
+    <Compile Include="CompresJSONLibrary\Utilities\TEMP\CompressFilter.cs" />
+    <Compile Include="CompresJSONLibrary\Utilities\Converter.cs" />
+    <Compile Include="CompresJSONLibrary\Utilities\DateFormatter.cs" />
+    <Compile Include="CompresJSONLibrary\Utilities\JavaScriptAnalyzer.cs" />
+    <Compile Include="CompresJSONLibrary\Utilities\Mapper.cs" />
+    <Compile Include="CompresJSONLibrary\Utilities\Tools.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CUsers.cs" />
     <Compile Include="Controllers\FriendsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PurchasesController.cs" />
@@ -230,8 +253,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Scripts\Models\AccountViewModels.cs" />
+    <Compile Include="Scripts\Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Purchase.cs">
       <DependentUpon>Model1.tt</DependentUpon>
@@ -254,6 +277,24 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\compresjson_scripts\aes.js" />
+    <Content Include="Scripts\compresjson_scripts\base64-string.js" />
+    <Content Include="Scripts\compresjson_scripts\Base64.js" />
+    <Content Include="Scripts\compresjson_scripts\Compress_Encrypt.js" />
+    <Content Include="Scripts\compresjson_scripts\encryptor_compressor.js" />
+    <Content Include="Scripts\compresjson_scripts\js-deflate.js" />
+    <Content Include="Scripts\compresjson_scripts\jsxcompressor.min.js" />
+    <Content Include="Scripts\compresjson_scripts\lz-string.js" />
+    <Content Include="Scripts\compresjson_scripts\pbkdf2.js" />
+    <Content Include="Scripts\Models\compresjson_scripts\aes.js" />
+    <Content Include="Scripts\Models\compresjson_scripts\base64-string.js" />
+    <Content Include="Scripts\Models\compresjson_scripts\Base64.js" />
+    <Content Include="Scripts\Models\compresjson_scripts\Compress_Encrypt.js" />
+    <Content Include="Scripts\Models\compresjson_scripts\encryptor_compressor.js" />
+    <Content Include="Scripts\Models\compresjson_scripts\js-deflate.js" />
+    <Content Include="Scripts\Models\compresjson_scripts\jsxcompressor.min.js" />
+    <Content Include="Scripts\Models\compresjson_scripts\lz-string.js" />
+    <Content Include="Scripts\Models\compresjson_scripts\pbkdf2.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <EntityDeploy Include="Model1.edmx">
@@ -316,6 +357,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\compresjson_scripts\dependencies\" />
+    <Folder Include="Scripts\Models\compresjson_scripts\dependencies\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\Payment\" />
     <Folder Include="Views\User\" />
