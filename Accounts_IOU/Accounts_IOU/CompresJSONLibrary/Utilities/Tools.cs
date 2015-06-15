@@ -5,8 +5,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Web;
+using System.Web.Http.Filters;
 using System.Web.Mvc;
 
 namespace CompresJSON
@@ -26,7 +28,7 @@ namespace CompresJSON
             return dict;
         }
 
-        public static string Domain(System.Web.Routing.RequestContext context)
+        public static string Domain()
         {
             return RemoveFromEnd(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + HttpContext.Current.Request.ApplicationPath, "/");
         }
@@ -41,6 +43,22 @@ namespace CompresJSON
             {
                 return s;
             }
+        }
+
+        public static string GetValueFromRequestHeader(HttpRequestHeaders headers, string key) {
+
+            string rc = "";
+
+            try
+            {
+                rc = headers.Where(x => x.Key == key).FirstOrDefault().Value.FirstOrDefault();
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return rc;
         }
     }
 }

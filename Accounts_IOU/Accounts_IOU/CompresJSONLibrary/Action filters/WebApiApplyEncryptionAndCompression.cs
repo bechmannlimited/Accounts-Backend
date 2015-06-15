@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Accounts_IOUression;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -19,21 +20,34 @@ namespace CompresJSON
         //after
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
-            var data = actionExecutedContext.Response.Content.ReadAsStringAsync().Result;
+            bool shouldEncryptManually = Tools.GetValueFromRequestHeader(actionExecutedContext.Request.Headers, "CompresJSON-Encrypt") == "true";
+            bool shouldCompressManually = Tools.GetValueFromRequestHeader(actionExecutedContext.Request.Headers, "CompresJSON-Compress") == "true";
 
-            //string serializedString = (new JavaScriptSerializer()).Serialize(data);
-            //serializedString = serializedString.Replace("\\\"", "#").Replace("\"", "");
-            string encryptedString = CompresJSON.EncryptAndCompressAsNecessary(data);
+            if (shouldEncryptManually)
+            {
+                var data = actionExecutedContext.Response.Content.ReadAsStringAsync().Result;
 
-            var rc = new Dictionary<string, object>();
-            rc["data"] = encryptedString;
+                string encryptedString = CompresJSON.EncryptAndCompress(data, shouldEncryptManually, shouldCompressManually);
 
-            actionExecutedContext.Response.Content = new StringContent((new JavaScriptSerializer()).Serialize(rc));
+                var rc = new Dictionary<string, object>();
+                rc["data"] = encryptedString;
+
+                actionExecutedContext.Response.Content = new StringContent((new JavaScriptSerializer()).Serialize(rc));
+            }
+
+            string acceptedEncoding = Tools.GetValueFromRequestHeader(actionExecutedContext.Request.Headers, "Accept-Encoding1");
+
+            if (acceptedEncoding.Equals("gzip", StringComparison.InvariantCultureIgnoreCase) || acceptedEncoding.Equals("deflate", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (actionExecutedContext.Response.Content != null) 
+                {
+                    actionExecutedContext.Response.Content = new CompressedContent(actionExecutedContext.Response.Content, acceptedEncoding);
+                }
+                //actionExecutedContext.Response.Headers.Add("Content-Encodingasdf", acceptedEncoding);
+            }
 
             base.OnActionExecuted(actionExecutedContext);
         }
-
-
     }
 
     public class DecryptAndDecompressAsNecessaryWebApi : ActionFilterAttribute
@@ -41,46 +55,53 @@ namespace CompresJSON
 
         public override void OnActionExecuting(System.Web.Http.Controllers.HttpActionContext actionContext)
         {
-            NameValueCollection postedParams = HttpContext.Current.Request.Params;
-            Dictionary<string, string> httpBodyDictionary = new Dictionary<string, string>();
 
-            foreach (var key in postedParams.AllKeys)
+            bool shouldEncryptManually = Tools.GetValueFromRequestHeader(actionContext.Request.Headers, "CompresJSON-Encrypt") == "true";
+            bool shouldCompressManually = Tools.GetValueFromRequestHeader(actionContext.Request.Headers, "CompresJSON-Compress") == "true";
+
+            if (shouldEncryptManually)
             {
-                httpBodyDictionary[key] = postedParams[key].ToString();
-            }
+                NameValueCollection postedParams = HttpContext.Current.Request.Params;
+                Dictionary<string, string> httpBodyDictionary = new Dictionary<string, string>();
 
-            if (httpBodyDictionary.ContainsKey("data") && httpBodyDictionary["data"] != null)
-            {
-                //assume encrypted + compressed for now
-                var d = httpBodyDictionary["data"];
-
-                string json = CompresJSON.DecryptAndDecompressAsNecessary(d) ;//.Replace("#", "\"");
-                var dict = new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(json);
-
-                foreach (var key in dict.Keys)
+                foreach (var key in postedParams.AllKeys)
                 {
-                    actionContext.ActionArguments[key] = dict[key];
-                    actionContext.ControllerContext.RouteData.Values[key] = dict[key];
+                    httpBodyDictionary[key] = postedParams[key].ToString();
                 }
 
-                var mvcActionModelParameters = actionContext.ActionDescriptor.GetParameters();
-
-                foreach (var parameter in mvcActionModelParameters)
+                if (httpBodyDictionary.ContainsKey("data") && httpBodyDictionary["data"] != null)
                 {
-                    string typeName = parameter.ParameterType.FullName; // "System.String";
+                    //assume encrypted + compressed for now
+                    var d = httpBodyDictionary["data"];
 
-                    object o = null;
+                    string json = CompresJSON.DecryptAndDecompress(d, shouldEncryptManually, shouldCompressManually); //.Replace("#", "\"");
+                    var dict = new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(json);
 
-                    if (!typeName.Contains("System"))
+                    foreach (var key in dict.Keys)
                     {
-                        o = System.Reflection.Assembly.GetExecutingAssembly().CreateInstance(typeName);
-                        o = Mapper.ToObject(actionContext.ControllerContext.RouteData.Values, o);
+                        actionContext.ActionArguments[key] = dict[key];
+                        actionContext.ControllerContext.RouteData.Values[key] = dict[key];
                     }
 
-                    if (o != null)
+                    var mvcActionModelParameters = actionContext.ActionDescriptor.GetParameters();
+
+                    foreach (var parameter in mvcActionModelParameters)
                     {
-                        actionContext.ActionArguments[parameter.ParameterName] = o;
-                        actionContext.ControllerContext.RouteData.Values[parameter.ParameterName] = o;
+                        string typeName = parameter.ParameterType.FullName; // "System.String";
+
+                        object o = null;
+
+                        if (!typeName.Contains("System"))
+                        {
+                            o = System.Reflection.Assembly.GetExecutingAssembly().CreateInstance(typeName);
+                            o = Mapper.ToObject(actionContext.ControllerContext.RouteData.Values, o);
+                        }
+
+                        if (o != null)
+                        {
+                            actionContext.ActionArguments[parameter.ParameterName] = o;
+                            actionContext.ControllerContext.RouteData.Values[parameter.ParameterName] = o;
+                        }
                     }
                 }
             }

@@ -7,17 +7,17 @@ namespace CompresJSON
 {
     public class CompresJSON
     {
-        public static string EncryptAndCompressAsNecessary(string str)
+        public static string EncryptAndCompress(string str, bool shouldEncrypt, bool shouldCompress)
         {
             //compress
 
-            if (CompresJSONSettings.ShouldCompress)
+            if (shouldCompress)
             {
                 str = Compressor.Compress(str);
             }
 
             //encrypt
-            if (CompresJSONSettings.ShouldEncrypt)
+            if (shouldEncrypt)
             {
                 str = Encryptor.Encrypt(str);
             }
@@ -26,16 +26,16 @@ namespace CompresJSON
             return str;
         }
 
-        public static string DecryptAndDecompressAsNecessary(string str)
+        public static string DecryptAndDecompress(string str, bool shouldEncrypt, bool shouldCompress)
         {
             //decrypt
-            if (CompresJSONSettings.ShouldEncrypt)
+            if (shouldEncrypt)
             {
                 str = Encryptor.Decrypt(str);
             }
 
             //decompress
-            if (CompresJSONSettings.ShouldCompress)
+            if (shouldCompress)
             {
                 str = Compressor.Decompress(str);
             }

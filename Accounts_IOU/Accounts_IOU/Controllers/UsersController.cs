@@ -123,6 +123,8 @@ namespace Accounts_IOU.Controllers
             return db.Users.Count(e => e.UserID == id) > 0;
         }
 
+        //[DecryptAndDecompressAsNecessaryWebApi]
+        //[EncryptAndCompressAsNecessaryWebApi]
         [HttpPost]
         [Route("api/Users/login")]
         public IHttpActionResult PostLogin([FromUri]User u)

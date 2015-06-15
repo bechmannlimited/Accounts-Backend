@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
 using System.Web.Optimization;
 
@@ -17,6 +18,23 @@ namespace CompresJSON
             StreamReader streamReader = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "/Scripts/compresjson_scripts/encryptor_compressor.js"); // + "/Scripts/compresjson_scripts/encryptor_compressor.js");
             script = streamReader.ReadToEnd();
             streamReader.Close();
+
+            //using (var client = new HttpClient())
+            //{
+            //    string path = Tools.Domain() + Scripts.Url("~/Scripts/compresjson").ToString();
+
+            //    var response = client.GetAsync(path).Result;
+
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //         by calling .Result you are performing a synchronous call
+            //        var responseContent = response.Content;
+
+            //         by calling .Result you are synchronously reading the result
+            //        script = responseContent.ReadAsStringAsync().Result;
+            //    }
+            //}
+
             
             return script;
         }

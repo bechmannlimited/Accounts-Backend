@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CompresJSON;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,17 @@ namespace Accounts_IOU
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+
+            //Setup secret routes
+            GlobalConfiguration.Configure(CompresJSONRouteManager.Register);
+            CompresJSONRouteManager.RegisterRoutes(RouteTable.Routes);
+
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+
 
             //JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
             //serializerSettings.Converters.Add(new IsoDateTimeConverter());

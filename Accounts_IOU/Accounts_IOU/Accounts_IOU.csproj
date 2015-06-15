@@ -214,6 +214,7 @@
     <Compile Include="CompresJSONLibrary\Compressor\Compressor.cs" />
     <Compile Include="CompresJSONLibrary\Compressor\Dependencies\GZip.cs" />
     <Compile Include="CompresJSONLibrary\Compressor\Dependencies\LZ77.cs" />
+    <Compile Include="CompresJSONLibrary\Compressor\NewFolder1\CompressedContent.cs" />
     <Compile Include="CompresJSONLibrary\Encryptor\Dependencies\CryptoJS.cs" />
     <Compile Include="CompresJSONLibrary\Encryptor\Encryptor.cs" />
     <Compile Include="CompresJSONLibrary\Router\CompresJSONRouteManager.cs" />
